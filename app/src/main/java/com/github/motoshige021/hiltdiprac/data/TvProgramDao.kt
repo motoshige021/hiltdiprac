@@ -24,9 +24,9 @@ interface TvProgramDao {
     suspend fun loadData(completed: Boolean): List<TvProgram>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(program: TvProgram);
+    suspend fun insert(program: TvProgram)
 
     @Update
-    suspend fun update(program: TvProgram);
+    suspend fun update(program: TvProgram)
 
 }

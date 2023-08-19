@@ -1,6 +1,8 @@
 package com.github.motoshige021.hiltdiprac.ui.main
 
 import android.app.AlertDialog
+import android.app.Dialog
+import android.content.DialogInterface
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -121,14 +123,22 @@ class MainFragment : Fragment() {
     private fun setupSowProgram() {
         //binding.viewModel!!.showProgramId.observe(viewLifecycleOwner) { id ->
         binding.viewModel!!.tvProgram.observe(viewLifecycleOwner) { tvProgram ->
-            Log.d(Global.TAG, "setupSowProgram(): id=" + id.toString())
             //val tvProgram = binding.viewModel!!.getProgram(id)
             tvProgram?.let {
-                AlertDialog.Builder(requireActivity())
-                    .setTitle(it.title)
-                    .setMessage(it.description)
-                    .setPositiveButton(context!!.getString(R.string.dialog_button_ok), null)
-                    .show()
+                if (binding.viewModel!!.getProgramId == it.id) {
+                    Log.d(Global.TAG, "setupSowProgram(): id=" + it.id)
+                    AlertDialog.Builder(requireActivity())
+                        .setTitle(it.title)
+                        .setMessage(it.description)
+                        .setPositiveButton(
+                            context!!.getString(R.string.dialog_button_ok),
+                            object : DialogInterface.OnClickListener {
+                                override fun onClick(dialog: DialogInterface?, which: Int) {
+                                    Log.d(Global.TAG, "Click OK Button on Program Dialog")
+                            }
+                        })
+                        .show()
+                }
             }
         }
     }

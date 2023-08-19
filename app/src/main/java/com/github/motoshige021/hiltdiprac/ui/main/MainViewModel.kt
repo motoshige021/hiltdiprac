@@ -14,8 +14,8 @@ class MainViewModel @Inject constructor(private val repository: TaskRepository)
     //fun loadData(id: Int) { repository.loadData(id) }
 
     private var _update = MutableLiveData<Boolean>(false)
-    private var _getProgramId = MutableLiveData<String>()
-
+    private var _getProgram = MutableLiveData<Boolean>(false)
+    var getProgramId : String = ""
     //var update : LiveData<Boolean> = _update
 
     private val _items : LiveData<List<TvProgram>> = _update.switchMap { update ->
@@ -35,9 +35,9 @@ class MainViewModel @Inject constructor(private val repository: TaskRepository)
     }
     val items : LiveData<List<TvProgram>> = _items
 
-    private val _program : LiveData<TvProgram> = _getProgramId.switchMap { programId ->
+    private val _program : LiveData<TvProgram> = _getProgram.switchMap {
         viewModelScope.launch {
-            repository.getProgram(programId)
+            repository.getProgram(getProgramId)
         }
 
         repository.observerProgram().distinctUntilChanged().switchMap {
@@ -66,7 +66,8 @@ class MainViewModel @Inject constructor(private val repository: TaskRepository)
     }
 
     fun getProgram(id: String)  {
-        _getProgramId.value = id   //repository.getProgram(id)
+        getProgramId = id
+        _getProgram.value = true   //repository.getProgram(id)
     }
     fun getBroadID(id: Int) : String { return repository.getBroadID(id) }
     fun setFiltering(in_filter: TaskRepository.PROGRAM_TYPE) {
@@ -83,6 +84,5 @@ class MainViewModel @Inject constructor(private val repository: TaskRepository)
 
     fun showProgramDetail(id: String) {
         getProgram(id)
-        //_showProgramId.value = id
     }
 }
