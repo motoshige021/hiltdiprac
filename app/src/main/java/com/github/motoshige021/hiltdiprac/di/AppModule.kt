@@ -1,6 +1,7 @@
 package com.github.motoshige021.hiltdiprac.di
 
 import android.content.Context
+import com.github.motoshige021.hiltdiprac.LocaldbTaskRepository
 import com.github.motoshige021.hiltdiprac.StubTaskRepository
 import com.github.motoshige021.hiltdiprac.TaskRepository
 import dagger.Binds
@@ -22,18 +23,20 @@ abstract class AppModule {
     abstract fun bindTaskRepository(stubTaskRepository: StubTaskRepository) : TaskRepository
     */
 
+    /* 開発要スタブ
     @Singleton
     @Provides
     fun provideTaskRepositor(@ApplicationContext context: Context) : TaskRepository {
         return StubTaskRepository(context)
     }
+    */
 
-    /* DAO-Sqlite3使用
+    /* DAO-Sqlite3使用 */
     @Singleton
     @Provides
-    fun provideTaskRepositor(@ApplicationContext context: Context) : TaskRepository {
+    fun provideTaskRepositor(@ApplicationContext context: Context): TaskRepository {
         return LocaldbTaskRepository(context)
     }
-     */
+
 }
 

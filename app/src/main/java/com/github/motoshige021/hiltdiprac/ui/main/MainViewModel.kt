@@ -6,6 +6,7 @@ import com.github.motoshige021.hiltdiprac.data.TvProgram
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import com.github.motoshige021.hiltdiprac.R
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repository: TaskRepository)
@@ -19,7 +20,9 @@ class MainViewModel @Inject constructor(private val repository: TaskRepository)
 
     private val _items : LiveData<List<TvProgram>> = _update.switchMap { update ->
         if (update) {
-            repository.loadData(filter.id)
+            viewModelScope.launch {
+                repository.loadData(filter.id)
+            }
         }
         repository.obeserveList().distinctUntilChanged().switchMap {
             var listData = MutableLiveData<List<TvProgram>>()
@@ -33,7 +36,9 @@ class MainViewModel @Inject constructor(private val repository: TaskRepository)
     val items : LiveData<List<TvProgram>> = _items
 
     private val _program : LiveData<TvProgram> = _getProgramId.switchMap { programId ->
-        repository.getProgram(programId)
+        viewModelScope.launch {
+            repository.getProgram(programId)
+        }
 
         repository.observerProgram().distinctUntilChanged().switchMap {
             var program = MutableLiveData<TvProgram>()
@@ -53,8 +58,10 @@ class MainViewModel @Inject constructor(private val repository: TaskRepository)
 
     init {
         //_items.value = repository.loadData(TaskRepository.PROGRAM_TYPE.ALL.id)
-        repository.setupData()
-        _update.value = true
+        viewModelScope.launch {
+            repository.setupData()
+            _update.value = true
+        }
         _regionCode.value = R.string.region2
     }
 
@@ -68,8 +75,10 @@ class MainViewModel @Inject constructor(private val repository: TaskRepository)
     }
 
     fun completedProgram(program: TvProgram, completed: Boolean) {
-        repository.setProgramCopleted(program, completed)
-        _update.value = true
+        viewModelScope.launch {
+            repository.setProgramCopleted(program, completed)
+            _update.value = true
+        }
     }
 
     fun showProgramDetail(id: String) {

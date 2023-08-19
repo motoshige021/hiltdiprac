@@ -9,10 +9,10 @@ interface TaskRepository {
     fun setProgramCopleted(program: TvProgram, completed: Boolean)
     fun getProgram(id: String ) : TvProgram?
      */
-    fun loadData(type: Int)
-    fun setProgramCopleted(program: TvProgram, completed: Boolean)
-    fun getProgram(id: String )
-    fun setupData()
+    suspend fun loadData(type: Int)
+    suspend fun setProgramCopleted(program: TvProgram, completed: Boolean)
+    suspend fun getProgram(id: String )
+    suspend fun setupData()
     fun getBroadID(id: Int): String
     fun obeserveList(): LiveData<List<TvProgram>>
     fun observerProgram(): LiveData<TvProgram>

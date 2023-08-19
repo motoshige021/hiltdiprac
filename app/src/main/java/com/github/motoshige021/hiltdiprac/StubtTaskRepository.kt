@@ -28,7 +28,7 @@ class StubTaskRepository @Inject constructor(context: Context) : TaskRepository 
         return tvProgram
     }
 
-    override fun setupData() {
+    override suspend fun setupData() {
         if (!stubList.isEmpty()) { return }
         for (i in 1..18) {
             stubList.add(TvProgram("Program" + (i * 10).toString(),
@@ -36,7 +36,7 @@ class StubTaskRepository @Inject constructor(context: Context) : TaskRepository 
         }
     }
 
-    override fun loadData(type: Int) {
+    override suspend fun loadData(type: Int) {
         Log.d(Global.TAG, "loadData:" + type.toString())
         filterType = type
         var arrayList = ArrayList<TvProgram>()
@@ -63,7 +63,7 @@ class StubTaskRepository @Inject constructor(context: Context) : TaskRepository 
         return "data_" + id.toString()
     }
 
-    override fun setProgramCopleted(in_program: TvProgram, completed: Boolean) {
+    override suspend fun setProgramCopleted(in_program: TvProgram, completed: Boolean) {
         stubList.forEach() { tvProgram ->
             if (in_program.id == tvProgram.id) {
                 tvProgram.isCompleted = completed
@@ -72,7 +72,7 @@ class StubTaskRepository @Inject constructor(context: Context) : TaskRepository 
         loadData(filterType)
     }
 
-    override fun getProgram(id: String) {
+    override suspend fun getProgram(id: String) {
         var resultProgram: TvProgram? = null
         run loop@{
             stubList.forEach() { tvProgram ->
