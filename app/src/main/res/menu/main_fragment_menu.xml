@@ -11,4 +11,11 @@
         android:id="@+id/menu_version"
         android:title="@string/menu_version"
         app:showAsAction="never" />
+
+    <!-- tempolary Debug Menu -->
+    <item
+        android:id="@+id/menu_debug_toDetail"
+        android:title="Move To Detail"
+        app:showAsAction="never"
+        />
 </menu>

@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">HiltDiPrac</string>
+    <string name="main_fragment_label">TvProgram list</string>
+    <string name="Detail_fragment_label">TvProgram Detail</string>
     <string name="menu_version">HiltDiPrac Ver0.1</string>
     <string name="menu_filtering">filtering</string>
     <string name="menu_filter_all">all program</string>
@@ -8,4 +10,5 @@
     <string name="dialog_button_ok">OK</string>
     <string name="region1">kantou</string>
     <string name="region2">kansai</string>
+    <string name="previous">Previous</string>
 </resources>

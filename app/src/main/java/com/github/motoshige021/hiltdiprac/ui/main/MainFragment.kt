@@ -17,6 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.fragment.findNavController
 import com.github.motoshige021.hiltdiprac.*
 import com.github.motoshige021.hiltdiprac.databinding.FragmentMainBinding
 
@@ -93,6 +94,12 @@ class MainFragment : Fragment() {
                     R.id.menu_filtering -> {
                         showFilteringMenu()
                     }
+                    // --Start Debug Menu
+                    R.id.menu_debug_toDetail -> {
+                        findNavController().navigate(R.id.action_MainFragment_to_DetailFragment,
+                            Bundle().apply { putString(Global.ARG_PROGRAMID, "debugTestId") })
+                    }
+                    // --End Debug Menu
                 }
                 return true
             }
