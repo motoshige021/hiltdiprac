@@ -28,7 +28,8 @@ class DetailFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding!!.buttonSecond.setOnClickListener {
-            findNavController().navigate(R.id.action_DetailFragment_to_MainFragment)
+            var aciton = DetailFragmentDirections.actionDetailFragmentToMainFragment()
+            findNavController().navigate(aciton)
         }
         binding!!.deugTextView.text = args.programId
     }
