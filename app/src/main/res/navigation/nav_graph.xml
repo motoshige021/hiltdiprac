@@ -14,10 +14,6 @@
         <action
             android:id="@+id/action_MainFragment_to_DetailFragment"
             app:destination="@id/DetailFragment" />
-        <argument
-            android:name="programId"
-            app:argType="string"
-            />
     </fragment>
     <fragment
         android:id="@+id/DetailFragment"
@@ -28,5 +24,9 @@
         <action
             android:id="@+id/action_DetailFragment_to_MainFragment"
             app:destination="@id/MainFragment" />
+        <argument
+            android:name="programId"
+            app:argType="string"
+            />
     </fragment>
 </navigation>

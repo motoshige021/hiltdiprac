@@ -96,8 +96,10 @@ class MainFragment : Fragment() {
                     }
                     // --Start Debug Menu
                     R.id.menu_debug_toDetail -> {
-                        findNavController().navigate(R.id.action_MainFragment_to_DetailFragment,
-                            Bundle().apply { putString(Global.ARG_PROGRAMID, "debugTestId") })
+                        var action = MainFragmentDirections.actionMainFragmentToDetailFragment("navDiretArgDebug")
+                        findNavController().navigate(action)
+                        //findNavController().navigate(R.id.action_MainFragment_to_DetailFragment,
+                        //     Bundle().apply { putString(Global.ARG_PROGRAMID, "debugTestId") })
                     }
                     // --End Debug Menu
                 }
