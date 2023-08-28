@@ -94,14 +94,14 @@ class MainFragment : Fragment() {
                     R.id.menu_filtering -> {
                         showFilteringMenu()
                     }
-                    // --Start Debug Menu
+                    /* --Start Debug Menu
                     R.id.menu_debug_toDetail -> {
                         var action = MainFragmentDirections.actionMainFragmentToDetailFragment("navDiretArgDebug")
                         findNavController().navigate(action)
                         //findNavController().navigate(R.id.action_MainFragment_to_DetailFragment,
                         //     Bundle().apply { putString(Global.ARG_PROGRAMID, "debugTestId") })
                     }
-                    // --End Debug Menu
+                    --End Debug Menu */
                 }
                 return true
             }
@@ -134,19 +134,26 @@ class MainFragment : Fragment() {
         binding.viewModel!!.tvProgram.observe(viewLifecycleOwner) { tvProgram ->
             //val tvProgram = binding.viewModel!!.getProgram(id)
             tvProgram?.let {
-                if (binding.viewModel!!.getProgramId == it.id) {
-                    Log.d(Global.TAG, "setupSowProgram(): id=" + it.id)
-                    AlertDialog.Builder(requireActivity())
-                        .setTitle(it.title)
-                        .setMessage(it.description)
-                        .setPositiveButton(
-                            context!!.getString(R.string.dialog_button_ok),
-                            object : DialogInterface.OnClickListener {
-                                override fun onClick(dialog: DialogInterface?, which: Int) {
-                                    Log.d(Global.TAG, "Click OK Button on Program Dialog")
-                            }
-                        })
-                        .show()
+                if (!Global.DEBUG_PROGRAM_DIALOG) {
+                    if (binding.viewModel!!.getProgramId == it.id) {
+                        Log.d(Global.TAG, "setupSowProgram(): id=" + it.id)
+                        var action = MainFragmentDirections.actionMainFragmentToDetailFragment(it.id)
+                        findNavController().navigate(action)
+                    }
+                } else {
+                    if (binding.viewModel!!.getProgramId == it.id) {
+                        Log.d(Global.TAG, "setupSowProgram(): id=" + it.id)
+                        AlertDialog.Builder(requireActivity())
+                            .setTitle(it.title)
+                            .setMessage(it.description)
+                            .setPositiveButton(context!!.getString(R.string.dialog_button_ok),
+                                object : DialogInterface.OnClickListener {
+                                    override fun onClick(dialog: DialogInterface?, which: Int) {
+                                        Log.d(Global.TAG, "Click OK Button on Program Dialog")
+                                    }
+                                })
+                            .show()
+                    }
                 }
             }
         }
