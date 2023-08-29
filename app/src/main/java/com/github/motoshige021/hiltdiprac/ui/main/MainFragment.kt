@@ -137,6 +137,7 @@ class MainFragment : Fragment() {
                 if (!Global.DEBUG_PROGRAM_DIALOG) {
                     if (binding.viewModel!!.getProgramId == it.id) {
                         Log.d(Global.TAG, "setupSowProgram(): id=" + it.id)
+                        binding.viewModel!!.getProgramId = ""
                         var action = MainFragmentDirections.actionMainFragmentToDetailFragment(it.id)
                         findNavController().navigate(action)
                     }
