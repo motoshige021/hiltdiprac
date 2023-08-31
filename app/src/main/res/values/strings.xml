@@ -7,8 +7,10 @@
     <string name="menu_filter_all">all program</string>
     <string name="menu_filter_active">active program</string>
     <string name="menu_filter_completed">concluded program</string>
+    <string name="menu_delete">delete</string>
     <string name="dialog_button_ok">OK</string>
     <string name="region1">kantou</string>
     <string name="region2">kansai</string>
     <string name="previous">Previous</string>
+
 </resources>
