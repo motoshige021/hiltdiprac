@@ -12,10 +12,12 @@ interface TaskRepository {
     suspend fun loadData(type: Int)
     suspend fun setProgramCopleted(program: TvProgram, completed: Boolean)
     suspend fun getProgram(id: String )
+    suspend fun deleteProgram(id: String)
     suspend fun setupData()
     fun getBroadID(id: Int): String
     fun obeserveList(): LiveData<List<TvProgram>>
     fun observerProgram(): LiveData<TvProgram>
+    fun oberverDeleteResult() : LiveData<Boolean>
 
     enum class PROGRAM_TYPE(val id: Int) {
         ALL(0),

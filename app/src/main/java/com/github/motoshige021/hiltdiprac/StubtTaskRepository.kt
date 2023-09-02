@@ -28,6 +28,10 @@ class StubTaskRepository @Inject constructor(context: Context) : TaskRepository 
         return tvProgram
     }
 
+    override fun oberverDeleteResult(): LiveData<Boolean> {
+        return MutableLiveData<Boolean>(true)
+    }
+
     override suspend fun setupData() {
         if (!stubList.isEmpty()) { return }
         for (i in 1..18) {
@@ -84,6 +88,17 @@ class StubTaskRepository @Inject constructor(context: Context) : TaskRepository 
         }
         resultProgram ?.let { resultTvProgram ->
             _tvProgram.value = resultTvProgram
+        }
+    }
+
+    override suspend fun deleteProgram(id: String) {
+        run loop@{
+            stubList.forEach() { tvProgram ->
+                if (tvProgram.id == id) {
+                    stubList.remove(tvProgram)
+                    return@loop
+                }
+            }
         }
     }
 }

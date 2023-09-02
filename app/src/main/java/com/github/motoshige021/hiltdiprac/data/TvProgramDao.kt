@@ -29,4 +29,6 @@ interface TvProgramDao {
     @Update
     suspend fun update(program: TvProgram)
 
+    @Query("DELETE From tvprograms WHERE eventid = :id")
+    suspend fun delete(id: String)
 }

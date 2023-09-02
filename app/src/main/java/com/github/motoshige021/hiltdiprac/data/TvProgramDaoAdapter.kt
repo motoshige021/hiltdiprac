@@ -41,4 +41,13 @@ class TvProgramDaoAdapter constructor(private val tvProgramDao: TvProgramDao) {
     suspend fun update(program: TvProgram) = withContext(Dispatchers.IO) {
         tvProgramDao.update(program)
     }
+
+    suspend fun delete(id: String) : Result<Boolean> = withContext(Dispatchers.IO) {
+        try {
+            tvProgramDao.delete(id)
+            Success(true)
+        } catch(e: Exception) {
+            Error(e)
+        }
+    }
 }

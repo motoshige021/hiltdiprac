@@ -19,6 +19,8 @@ class LocaldbTaskRepository @Inject constructor(_context: Context) : TaskReposit
     private val tvProgramList : LiveData<List<TvProgram>> = _tvProgramList
     private var _tvProgram = MutableLiveData<TvProgram>()
     private val tvProgram : LiveData<TvProgram> = _tvProgram
+    private var _deleteResult = MutableLiveData<Boolean>()
+    private val deleteResult : LiveData<Boolean> = _deleteResult
 
     private var filterType = TaskRepository.PROGRAM_TYPE.ALL.id
 
@@ -36,6 +38,10 @@ class LocaldbTaskRepository @Inject constructor(_context: Context) : TaskReposit
 
     override fun observerProgram(): LiveData<TvProgram> {
         return tvProgram
+    }
+
+    override fun oberverDeleteResult() : LiveData<Boolean> {
+        return deleteResult
     }
 
     override suspend fun setupData() {
@@ -125,5 +131,19 @@ class LocaldbTaskRepository @Inject constructor(_context: Context) : TaskReposit
     override fun getBroadID(id: Int): String {
         Log.d(Global.TAG, "LocalDbRepository::getBroadID:" + id.toString())
         return "data_" + id.toString()
+    }
+
+    override suspend fun deleteProgram(id: String) {
+        Log.d(Global.TAG,"LocalDbRepository::deleteProgram:" +id.toString())
+        coroutineScope {
+            launch {
+                var result = tvProgramDaoAdapter.delete(id)
+                if (result is Result.Success) {
+                    _deleteResult.value = true
+                } else if (result is Result.Error) {
+                    _deleteResult.value = false
+                }
+            }
+        }
     }
 }
