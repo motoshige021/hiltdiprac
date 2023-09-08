@@ -10,6 +10,8 @@ class FakeTaskRepository : TaskRepository {
     private val tvProgramList : LiveData<List<TvProgram>> = _tvProgramList
     private var _tvProgram = MutableLiveData<TvProgram>()
     private val tvProgram : LiveData<TvProgram> = _tvProgram
+    private var _deleteResult = MutableLiveData<Boolean>()
+    private val deleteResult: LiveData<Boolean> = _deleteResult
 
     private var testList : ArrayList<TvProgram>
 
@@ -44,7 +46,14 @@ class FakeTaskRepository : TaskRepository {
     }
 
     override suspend fun getProgram(id: String) {
-        TODO("Not yet implemented")
+        run loop@{
+            testList.forEach { program ->
+                if (program.id == id) {
+                    _tvProgram.value = program
+                    return@loop
+                }
+            }
+        }
     }
 
     override suspend fun loadData(type: Int) {
@@ -79,5 +88,36 @@ class FakeTaskRepository : TaskRepository {
     }
 
     override suspend fun setupData() {
+    }
+
+    override fun oberverDeleteResult(): LiveData<Boolean> {
+        return  deleteResult
+    }
+
+    override suspend fun deleteProgram(id: String) {
+        var isDelete = false
+        run loop@ {
+            testList.forEach { program ->
+                if (id == program.id) {
+                    testList.remove(program)
+                    isDelete = true
+                    return@loop
+                }
+            }
+        }
+        _deleteResult.value = isDelete
+    }
+
+    fun checkExistProgram(id: String): Boolean {
+        var ret = false
+        run loop@ {
+            testList.forEach { program ->
+                if (program.id == id) {
+                    ret = true
+                    return@loop
+                }
+            }
+        }
+        return ret
     }
 }
