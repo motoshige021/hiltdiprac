@@ -4,6 +4,8 @@ import android.content.Context
 import com.github.motoshige021.hiltdiprac.LocaldbTaskRepository
 import com.github.motoshige021.hiltdiprac.StubTaskRepository
 import com.github.motoshige021.hiltdiprac.TaskRepository
+import com.github.motoshige021.hiltdiprac.data.LocaldbDataSource
+import com.github.motoshige021.hiltdiprac.data.TvProgramDataSource
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -31,12 +33,23 @@ abstract class AppModule {
     }
     */
 
+    @Qualifier
+    @Retention(AnnotationRetention.RUNTIME)
+    annotation class LocalProgramDataSource
+
+    @Singleton
+    @LocalProgramDataSource
+    @Provides
+    fun provideTvProgramDataSource():TvProgramDataSource {
+        return LocaldbDataSource()
+    }
+
     /* DAO-Sqlite3使用 */
     @Singleton
     @Provides
-    fun provideTaskRepositor(@ApplicationContext context: Context): TaskRepository {
-        return LocaldbTaskRepository(context)
+    fun provideTaskRepositor(@ApplicationContext context: Context,
+        @LocalProgramDataSource localdbDataSource: TvProgramDataSource): TaskRepository {
+        return LocaldbTaskRepository(context, localdbDataSource)
     }
 
 }
-

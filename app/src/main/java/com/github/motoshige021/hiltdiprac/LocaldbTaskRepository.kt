@@ -10,10 +10,11 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class LocaldbTaskRepository @Inject constructor(_context: Context) : TaskRepository {
+class LocaldbTaskRepository @Inject constructor(_context: Context,
+        _localdbDataSource: TvProgramDataSource) : TaskRepository {
     private var database : AppDataBase
     private val context: Context
-    private var tvProgramDaoAdapter: TvProgramDaoAdapter
+    private var localdbDataSource: TvProgramDataSource
 
     private var _tvProgramList = MutableLiveData<List<TvProgram>>()
     private val tvProgramList : LiveData<List<TvProgram>> = _tvProgramList
@@ -26,10 +27,11 @@ class LocaldbTaskRepository @Inject constructor(_context: Context) : TaskReposit
 
     init {
         context = _context
+        localdbDataSource = _localdbDataSource
         database = Room.databaseBuilder(context.applicationContext,
             AppDataBase::class.java, "TvProgram.db")
             .build()
-        tvProgramDaoAdapter = TvProgramDaoAdapter(database.tvProgramDao())
+        localdbDataSource.seTvProgramDao(database.tvProgramDao())
     }
 
     override fun obeserveList(): LiveData<List<TvProgram>> {
@@ -47,10 +49,10 @@ class LocaldbTaskRepository @Inject constructor(_context: Context) : TaskReposit
     override suspend fun setupData() {
         coroutineScope {
             launch {
-                var result = tvProgramDaoAdapter.getAllPrograms()
+                var result = localdbDataSource.getAllPrograms()
                 if (result is Result.Success && result.data.size == 0) {
                     for (i in 1..18) {
-                        tvProgramDaoAdapter.insert(
+                        localdbDataSource.insert(
                             TvProgram(
                                 "Program" + (i * 10).toString() + "_db",
                                 "Description" + (i * 100).toString() + "_db",
@@ -67,7 +69,7 @@ class LocaldbTaskRepository @Inject constructor(_context: Context) : TaskReposit
         coroutineScope {
             launch {
                 program.isCompleted = completed
-                tvProgramDaoAdapter.update(program)
+                localdbDataSource.update(program)
             }
             loadData(filterType)
         }
@@ -79,7 +81,7 @@ class LocaldbTaskRepository @Inject constructor(_context: Context) : TaskReposit
                 filterType = type
                 when (type) {
                     TaskRepository.PROGRAM_TYPE.COMPLETED.id -> {
-                        val result = tvProgramDaoAdapter.loadData(true)
+                        val result = localdbDataSource.loadData(true)
                         if (result is Result.Success) {
                             result.data?.let { list ->
                                 _tvProgramList.value = list
@@ -89,7 +91,7 @@ class LocaldbTaskRepository @Inject constructor(_context: Context) : TaskReposit
                         }
                     }
                     TaskRepository.PROGRAM_TYPE.ACTIVE.id -> {
-                        val result = tvProgramDaoAdapter.loadData(false)
+                        val result = localdbDataSource.loadData(false)
                         if (result is Result.Success) {
                             result.data?.let { list ->
                                 _tvProgramList.value = list
@@ -99,7 +101,7 @@ class LocaldbTaskRepository @Inject constructor(_context: Context) : TaskReposit
                         }
                     }
                     else -> { // TaskRepository.PROGRAM_TYPE.ALL.idを含む
-                        val result = tvProgramDaoAdapter.getAllPrograms()
+                        val result = localdbDataSource.getAllPrograms()
                         if (result is Result.Success) {
                             result.data?.let { list ->
                                 _tvProgramList.value = list
@@ -116,7 +118,7 @@ class LocaldbTaskRepository @Inject constructor(_context: Context) : TaskReposit
     override suspend fun getProgram(id: String) {
         coroutineScope {
             launch {
-                var result = tvProgramDaoAdapter.getProgram(id)
+                var result = localdbDataSource.getProgram(id)
                 if (result is Result.Success) {
                     result.data?.let { program ->
                         _tvProgram.value = program
@@ -137,7 +139,7 @@ class LocaldbTaskRepository @Inject constructor(_context: Context) : TaskReposit
         Log.d(Global.TAG,"LocalDbRepository::deleteProgram:" +id.toString())
         coroutineScope {
             launch {
-                var result = tvProgramDaoAdapter.delete(id)
+                var result = localdbDataSource.delete(id)
                 if (result is Result.Success) {
                     _deleteResult.value = true
                 } else if (result is Result.Error) {
