@@ -1,17 +1,23 @@
 package com.github.motoshige021.hiltdiprac.data
 
+import android.content.Context
+import androidx.room.Room
 import com.github.motoshige021.hiltdiprac.data.Result.Success
 import com.github.motoshige021.hiltdiprac.data.Result.Error
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class LocaldbDataSource constructor()
+class LocaldbDataSource constructor(val context: Context)
     : TvProgramDataSource {
 
-    private var tvProgramDao: TvProgramDao? = null
+    private lateinit var database : AppDataBase
+    private var tvProgramDao: TvProgramDao ? = null
 
-    override fun seTvProgramDao(_tvProgramDao: TvProgramDao) {
-        tvProgramDao = _tvProgramDao
+    override fun setTvProgramDao() {
+        database = Room.databaseBuilder(context.applicationContext,
+            AppDataBase::class.java, "TvProgram.db")
+            .build()
+        tvProgramDao = database.tvProgramDao()
     }
 
     override suspend fun getAllPrograms(): Result<List<TvProgram>> = withContext(Dispatchers.IO) {

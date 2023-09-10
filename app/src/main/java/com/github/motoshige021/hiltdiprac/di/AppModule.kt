@@ -40,16 +40,18 @@ abstract class AppModule {
     @Singleton
     @LocalProgramDataSource
     @Provides
-    fun provideTvProgramDataSource():TvProgramDataSource {
-        return LocaldbDataSource()
+    fun provideTvProgramDataSource(@ApplicationContext context: Context)
+    :TvProgramDataSource {
+        return LocaldbDataSource(context)
     }
 
     /* DAO-Sqlite3使用 */
     @Singleton
     @Provides
-    fun provideTaskRepositor(@ApplicationContext context: Context,
+    //fun provideTaskRepositor(@ApplicationContext context: Context,
+    fun provideTaskRepositor(
         @LocalProgramDataSource localdbDataSource: TvProgramDataSource): TaskRepository {
-        return LocaldbTaskRepository(context, localdbDataSource)
+        return LocaldbTaskRepository(localdbDataSource)
     }
 
 }

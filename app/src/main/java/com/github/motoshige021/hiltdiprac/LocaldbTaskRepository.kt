@@ -10,10 +10,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class LocaldbTaskRepository @Inject constructor(_context: Context,
-        _localdbDataSource: TvProgramDataSource) : TaskRepository {
-    private var database : AppDataBase
-    private val context: Context
+class LocaldbTaskRepository @Inject constructor(_localdbDataSource: TvProgramDataSource)
+    : TaskRepository {
     private var localdbDataSource: TvProgramDataSource
 
     private var _tvProgramList = MutableLiveData<List<TvProgram>>()
@@ -26,12 +24,8 @@ class LocaldbTaskRepository @Inject constructor(_context: Context,
     private var filterType = TaskRepository.PROGRAM_TYPE.ALL.id
 
     init {
-        context = _context
         localdbDataSource = _localdbDataSource
-        database = Room.databaseBuilder(context.applicationContext,
-            AppDataBase::class.java, "TvProgram.db")
-            .build()
-        localdbDataSource.seTvProgramDao(database.tvProgramDao())
+        localdbDataSource.setTvProgramDao()
     }
 
     override fun obeserveList(): LiveData<List<TvProgram>> {

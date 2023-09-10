@@ -1,9 +1,11 @@
 package com.github.motoshige021.hiltdiprac.data
 
+import android.content.Context
 import com.github.motoshige021.hiltdiprac.data.Result
 
 interface TvProgramDataSource {
-    fun seTvProgramDao(_tvProgramDao: TvProgramDao)
+
+    fun setTvProgramDao()
 
     suspend fun getAllPrograms(): Result<List<TvProgram>>
 
