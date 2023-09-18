@@ -19,6 +19,9 @@ interface TaskRepository {
     fun observerProgram(): LiveData<TvProgram>
     fun oberverDeleteResult() : LiveData<Boolean>
 
+    fun addProgramToList(program: TvProgram)
+    fun clearProgramList()
+
     enum class PROGRAM_TYPE(val id: Int) {
         ALL(0),
         ACTIVE(1),

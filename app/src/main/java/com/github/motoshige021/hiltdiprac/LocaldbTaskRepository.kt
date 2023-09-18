@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
 import com.github.motoshige021.hiltdiprac.data.*
+import com.github.motoshige021.hiltdiprac.util.*
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -41,18 +42,20 @@ class LocaldbTaskRepository @Inject constructor(_localdbDataSource: TvProgramDat
     }
 
     override suspend fun setupData() {
-        coroutineScope {
-            launch {
-                var result = localdbDataSource.getAllPrograms()
-                if (result is Result.Success && result.data.size == 0) {
-                    for (i in 1..18) {
-                        localdbDataSource.insert(
-                            TvProgram(
-                                "Program" + (i * 10).toString() + "_db",
-                                "Description" + (i * 100).toString() + "_db",
-                                (i % 2 == 0)
+        wrapEspressoIdlingResource {
+            coroutineScope {
+                launch {
+                    var result = localdbDataSource.getAllPrograms()
+                    if (result is Result.Success && result.data.size == 0) {
+                        for (i in 1..18) {
+                            localdbDataSource.insert(
+                                TvProgram(
+                                    "Program" + (i * 10).toString() + "_db",
+                                    "Description" + (i * 100).toString() + "_db",
+                                    (i % 2 == 0)
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }
@@ -70,40 +73,42 @@ class LocaldbTaskRepository @Inject constructor(_localdbDataSource: TvProgramDat
     }
 
     override suspend fun loadData(type: Int) {
-        coroutineScope {
-            launch {
-                filterType = type
-                when (type) {
-                    TaskRepository.PROGRAM_TYPE.COMPLETED.id -> {
-                        val result = localdbDataSource.loadData(true)
-                        if (result is Result.Success) {
-                            result.data?.let { list ->
-                                _tvProgramList.value = list
+        wrapEspressoIdlingResource {
+            coroutineScope {
+                launch {
+                        filterType = type
+                        when (type) {
+                            TaskRepository.PROGRAM_TYPE.COMPLETED.id -> {
+                                val result = localdbDataSource.loadData(true)
+                                if (result is Result.Success) {
+                                    result.data?.let { list ->
+                                        _tvProgramList.value = list
+                                    }
+                                } else if (result is Result.Error) {
+                                    result.exception.message?.let { Log.d(Global.TAG, it) }
+                                }
                             }
-                        } else if (result is Result.Error) {
-                            result.exception.message?.let { Log.d(Global.TAG, it) }
-                        }
-                    }
-                    TaskRepository.PROGRAM_TYPE.ACTIVE.id -> {
-                        val result = localdbDataSource.loadData(false)
-                        if (result is Result.Success) {
-                            result.data?.let { list ->
-                                _tvProgramList.value = list
+                            TaskRepository.PROGRAM_TYPE.ACTIVE.id -> {
+                                val result = localdbDataSource.loadData(false)
+                                if (result is Result.Success) {
+                                    result.data?.let { list ->
+                                        _tvProgramList.value = list
+                                    }
+                                } else if (result is Result.Error) {
+                                    result.exception.message?.let { Log.d(Global.TAG, it) }
+                                }
                             }
-                        } else  if (result is Result.Error) {
-                            result.exception.message?.let { Log.d(Global.TAG, it) }
-                        }
-                    }
-                    else -> { // TaskRepository.PROGRAM_TYPE.ALL.idを含む
-                        val result = localdbDataSource.getAllPrograms()
-                        if (result is Result.Success) {
-                            result.data?.let { list ->
-                                _tvProgramList.value = list
+                            else -> { // TaskRepository.PROGRAM_TYPE.ALL.idを含む
+                                val result = localdbDataSource.getAllPrograms()
+                                if (result is Result.Success) {
+                                    result.data?.let { list ->
+                                        _tvProgramList.value = list
+                                    }
+                                } else if (result is Result.Error) {
+                                    result.exception.message?.let { Log.d(Global.TAG, it) }
+                                }
                             }
-                        } else  if (result is Result.Error) {
-                            result.exception.message?.let { Log.d(Global.TAG, it) }
                         }
-                    }
                 }
             }
         }
@@ -141,5 +146,13 @@ class LocaldbTaskRepository @Inject constructor(_localdbDataSource: TvProgramDat
                 }
             }
         }
+    }
+
+    override fun addProgramToList(program: TvProgram) {
+        TODO("Not yet implemented")
+    }
+
+    override fun clearProgramList() {
+        TODO("Not yet implemented")
     }
 }

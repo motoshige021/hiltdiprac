@@ -21,11 +21,11 @@ class FakeTaskRepository : TaskRepository {
         testList = ArrayList<TvProgram>()
     }
 
-    fun clearProgramList() {
+    override fun clearProgramList() {
         testList.clear()
     }
 
-    fun addProgramToList(program: TvProgram) {
+    override fun addProgramToList(program: TvProgram) {
         testList.add(program)
     }
 

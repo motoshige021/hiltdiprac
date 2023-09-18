@@ -101,4 +101,12 @@ class StubTaskRepository @Inject constructor(context: Context) : TaskRepository 
             }
         }
     }
+
+    override fun addProgramToList(program: TvProgram) {
+        stubList.add(program)
+    }
+
+    override fun clearProgramList() {
+        stubList.clear()
+    }
 }
